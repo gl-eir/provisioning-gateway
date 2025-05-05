@@ -1,0 +1,28 @@
+server:
+  port: 8080
+  http:
+    port: 8081
+  servlet:
+    context-path: /eir
+  ssl:
+    enabled: true
+    key-alias: dmc_eir_ssl
+    key-store: classpath:dmc_eir.p12
+    key-store-type: PKCS12
+    key-password: eir@12345
+    key-store-password: eir@12345
+
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/app
+    username: root
+    password: root
+    #    url: jdbc:mysql://159.223.159.153:3306/ceir
+    #    username: cdrp
+    #    password: Cdrp@1234
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    databasePlatform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddlAuto: none
+    showSql: true

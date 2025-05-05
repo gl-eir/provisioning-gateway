@@ -1,0 +1,43 @@
+-------------To Generate PKCS12
+
+keytool -genkeypair -alias <ALIAS-NAME> -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore <CERTIFICATE_NAME>.p12 -validity 3650
+
+keytool -genkeypair -alias local_ssl -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore local_ssl.p12 -validity 365
+
+keytool -genkeypair -keyalg RSA -keysize 2048 -alias dmc_eir_ssl -ext "SAN:c=DNS:dmc.com,IP:10.100.2.8,IP:10.11.154.17,IP:192.168.10.11,IP:10.100.2.7,IP:10.11.154.1,IP:10.11.154.3,IP:10.11.154.19,IP:10.11.154.18,IP:10.11.154.2,IP:127.0.0.1" -validity 3650 -storepass eir@12345 -keypass eir@12345 -keystore dmc_eir.p12 -deststoretype PKCS12
+
+-------------To Generate JKS
+
+keytool -genkeypair -alias <ALIAS-NAME> -keyalg RSA -keysize 2048 -keystore <CERTIFICATE_NAME>.jks -validity 3650
+
+We recommend using the PKCS12 format, which is an industry standard format. So in case we already have a JKS keystore, we can convert it to PKCS12 format using the following command:
+
+keytool -importkeystore -srckeystore baeldung.jks -destkeystore baeldung.p12 -deststoretype pkcs12
+
+keytool program Definition:
+-genkeypair: generates a key pair
+-alias local_ssl: specifies the alias of the keypair is local_ssl, which uniquely identifies it.
+-keyalg RSA: specifies the algorithm to be used is RSA
+-keysize 2048: specifies the size of the key is 2048 bit
+-storetype PKCS12: specifies the file format to store the key pair is PKCS12
+-keystore local-ssl.p12: species name of the file that stores the key pair is local-ssl.p12
+-validity 365: specifies the expiration date will be 365 days from now
+-ext san=dns:localhost: includes an X.509 extension for Subject Alternate Name (SAN) – a SAN is required so the certificate will be trusted by browsers on localhost
+
+
+
+###################Install local certificate
+
+ keytool -export -keystore ./local_ssl.p12 -alias local_ssl -file local_ssl.crt
+
+################# to call with Certificate
+curl --cacert local_ssl.cer https://localhost:8080/eir/track/
+
+#######################Create Key Store if you have public Certificate
+
+If you don't have a CA bundle file, import certificates by executing the following command for each certificate type:
+
+keytool -import -alias [certificate-type] -trustcacerts -file [certificate-file] -keystore [filename-new-keystore.jks]
+
+eg: keytool -import -alias PKCS12 -trustcacerts -file certificate.crt -keystore my_ca_keystore.p12
+

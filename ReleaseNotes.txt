@@ -1,0 +1,119 @@
+------------eir-pm-1.5.1.2 (Release Notes)
+
+1. It will delete default before 5 olders records in deviceSyncRequest 
+2. Scheduler will default runs daily 1AM morning.
+3. One API exposed by using that we can also delete (See Swagger)
+
+DB change : 
+
+NA
+
+
+application.yml : 
+
+scheduler:
+  daily:
+    cronjob: 0 0 1 * * *
+    
+deviceSyncRequest:
+  delete:
+    beforeDays: 5
+
+
+------------eir-pm-1.5.1.3 (Release Notes)
+
+1. files will be created before deleting records from Device_Sync_Request
+
+	
+DB change : 
+
+NA
+
+application.yml : 
+
+deviceSyncRequest:
+  delete:
+    filePath: D:/
+
+------------eir-pm-1.5.1.4 (Release Notes)
+
+1. Priority added in device_sync_requests.
+2. Every Request using http will be added as High Priority
+3. Sequence to processing requests is
+	retry /failed request (high priority)
+	New Request (High Priority)
+	retry /failed request (Low priority)
+	New Request (Low Priority)
+	
+DB change : 
+
+ALTER TABLE device_sync_request ADD COLUMN priority INT DEFAULT 0;
+
+application.yml : 
+
+NA
+
+------------eir-pm-1.5.1.5 (Release Notes)
+
+1. Added New Response_status column where we are adding actual response from Core Module.
+
+DB change :
+
+ALTER TABLE device_sync_request ADD COLUMN response_status varchar(20) DEFAULT NULL;
+
+application.yml :
+
+NA
+
+------------eir-pm-1.5.1.6 (Release Notes)
+
+1. Added priority and response_status in deleted csv files
+2. Added check to delete records which are SYNCED only
+3. Basic Authentication Added
+
+DB change :
+
+CREATE TABLE `user_auth` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) DEFAULT NULL,
+  `password` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `user_feature_ip_access_list` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(255) DEFAULT NULL,
+  `user_id` bigint NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+application.yml :
+
+NA
+
+------------eir-pm-1.5.1.7 (Release Notes)
+
+1. Selection of device_sync_request table, Changed order by id and limit 60000
+
+DB change :
+
+NA
+application.yml :
+
+NA
+
+------------eir-pm-1.5.1.8 (Release Notes)
+
+1. Password Encryption/Decryption Support added
+
+DB change :
+
+NA
+
+application.yml :
+
+jasypt:
+  encryptor:
+    password: eir
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
